@@ -1,59 +1,93 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import * as actionCreator from "../../store/contactStore/index";
 import { withRouter, Link } from "react-router-dom";
+
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Divider from "@material-ui/core/Divider";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteForeverOutlinedIcon from "@material-ui/icons/DeleteForeverOutlined";
+import { EditOutlined } from "@material-ui/icons";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    maxWidth: "36ch",
+    backgroundColor: theme.palette.background.paper,
+  },
+  inline: {
+    display: "inline",
+  },
+}));
+
 const Contact = (props) => {
-  console.log("c", props.contactData);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const classes = useStyles();
   const deleteContact = (id) => {
     props.onDeleteContact(id);
   };
-  const changeContactHAndler = (event) => {
-    const { name, value } = event.target;
-    console.log(value);
-    switch (name) {
-      case "name":
-        setName(value);
-        break;
-      case "phone":
-        return setPhone(value);
-      default:
-        return null;
-    }
-  };
-
   return (
     <div>
       {props.contactData.length > 0 ? (
         props.contactData.map((contact, index) => (
-          <React.Fragment key={index}>
-            <Link
-              to={{
-                pathname: "/deletecontact",
-                state: {
-                  data: contact,
-                  id: index,
-                  deleteContact: deleteContact,
-                },
-              }}
-            >
-              <h1>{contact.name}</h1>
-              <p>{contact.phone}</p>
-            </Link>
-            <Link
-              to={{
-                pathname: "/editcontact",
-                state: {
-                  data: contact,
-                  id: index,
-                  changeContactHAndler: changeContactHAndler,
-                },
-              }}
-            >
-              <button>Edit</button>
-            </Link>
-          </React.Fragment>
+          <List className={classes.root} key={index}>
+            <ListItem alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar alt={contact.name} src="/static/images/avatar/1.jpg" />
+              </ListItemAvatar>
+              <ListItemText
+                primary={contact.name}
+                secondary={
+                  <React.Fragment>
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      className={classes.inline}
+                      color="textPrimary"
+                    >
+                      Phone:{" "}
+                    </Typography>
+                    {contact.phone}
+                  </React.Fragment>
+                }
+              />
+              <ListItemSecondaryAction>
+                <Link
+                  to={{
+                    pathname: "/editcontact",
+                    state: {
+                      id: index,
+                    },
+                  }}
+                >
+                  <IconButton edge="end" aria-label="delete">
+                    <EditOutlined color="primary" />
+                  </IconButton>
+                </Link>
+                <Link
+                  to={{
+                    pathname: "/deletecontact",
+                    state: {
+                      data: contact,
+                      id: index,
+                      deleteContact: deleteContact,
+                    },
+                  }}
+                >
+                  <IconButton edge="end" aria-label="delete">
+                    <DeleteForeverOutlinedIcon color="secondary" />
+                  </IconButton>
+                </Link>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider variant="inset" component="li" />
+          </List>
         ))
       ) : (
         <h1>No contact</h1>
@@ -77,6 +111,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Contact)
+export default React.memo(
+  withRouter(connect(mapStateToProps, mapDispatchToProps)(Contact))
 );
