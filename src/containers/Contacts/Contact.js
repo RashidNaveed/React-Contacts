@@ -34,6 +34,7 @@ const Contact = (props) => {
   };
   return (
     <div>
+      <h1>Hi from ubuntu</h1>
       {props.contactData.length > 0 ? (
         props.contactData.map((contact, index) => (
           <List className={classes.root} key={index}>
