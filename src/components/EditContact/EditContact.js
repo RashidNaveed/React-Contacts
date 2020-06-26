@@ -3,48 +3,53 @@ import { connect } from 'react-redux';
 import * as actionCreator from '../../store/contactStore/index';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 import makeStyles from '../UI/Modal/ModalStyles';
 import Modals from '../UI/Modal/Modal';
 
 const EditContact = (props) => {
   if (!props.location.state) {
     props.history.replace('/');
-  } else {
-    // console.log(
-    //   'props.contactData[props.location.state.id].phone',
-    //   props.contactData[props.location.state.id]
-    // );
   }
   const [contact, setContact] = useState(
     props.contactData[props.location.state.id]
   );
-  const [name, setName] = useState(
-    props.contactData[props.location.state.id].name
-  );
-  const [phone, setPhone] = useState(
-    props.contactData[props.location.state.id].phone
-  );
-  const changeContactHAndler = (event, inputIdentifier) => {
-    console.log('id', inputIdentifier);
-    console.log('contact', contact[inputIdentifier]);
-    const updatedContactData = {
-      ...contact,
-    };
-    updatedContactData[inputIdentifier] = event.target.value;
-    console.log('updatedcontactdata', updatedContactData);
-    setContact(updatedContactData);
-    // const { name, value } = event.target;
-    // console.log('name', name, 'value', value);
-
-    // switch (name) {
-    //   case 'name':
-    //     setName(value);
-    //     break;
-    //   case 'phone':
-    //     return setPhone[name](value);
-    //   default:
-    //     return null;
-    // }
+  const changeContactHAndler = (
+    event,
+    inputIdentifier,
+    phoneIdentifier,
+    type
+  ) => {
+    console.log('event', event.target);
+    if (inputIdentifier === 'phone') {
+      const phoneData = [...contact[inputIdentifier]];
+      if (event.target === <button></button>) {
+        phoneData
+          .slice(0, phoneIdentifier)
+          .concat(phoneData.slice(phoneIdentifier + 1, phoneIdentifier.length));
+      }
+      if (type) {
+        phoneData[phoneIdentifier].type = event.target.value;
+      }
+      if (event.target === <input></input>) {
+        phoneData[phoneIdentifier].number = event.target.value;
+      }
+      console.log('phoneData', phoneData);
+      const updatedContactData = { ...contact };
+      updatedContactData[inputIdentifier] = phoneData;
+      console.log('updatedContactData', updatedContactData);
+      setContact(updatedContactData);
+    } else {
+      const updatedContactData = {
+        ...contact,
+      };
+      updatedContactData[inputIdentifier] = event.target.value;
+      console.log('updatedcontactdata', updatedContactData);
+      setContact(updatedContactData);
+    }
   };
   const contactDataArray = [];
   for (let key in contact) {
@@ -53,14 +58,9 @@ const EditContact = (props) => {
       value: contact[key],
     });
   }
-  console.log('Array', contactDataArray);
   const submitContactData = (event) => {
     event.preventDefault();
-    let contactData = {
-      name: name,
-      phone: phone,
-    };
-    props.onEditContact(props.location.state.id, contactData);
+    props.onEditContact(props.location.state.id, contact);
     props.history.replace('/');
   };
 
@@ -73,7 +73,42 @@ const EditContact = (props) => {
       autoComplete='off'>
       {contactDataArray.map((contact) => (
         <React.Fragment key={contact.key}>
-          {contact.key !== 'phone' ? (
+          {contact.key === 'phone' ? (
+            contact.value.map((number, index) => (
+              <React.Fragment key={index}>
+                <button
+                  onClick={(event) =>
+                    changeContactHAndler(event, contact.key, index)
+                  }>
+                  -
+                </button>
+                <TextField
+                  id='outlined-input2'
+                  name={number.type}
+                  label={
+                    number.type.charAt(0).toUpperCase() + number.type.slice(1)
+                  }
+                  value={number.number}
+                  variant='outlined'
+                  onChange={(event) =>
+                    changeContactHAndler(event, contact.key, index)
+                  }
+                />
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={number.type}
+                  onChange={(event) =>
+                    changeContactHAndler(event, contact.key, index, number.type)
+                  }>
+                  <MenuItem value='home'>Home</MenuItem>
+                  <MenuItem value='work'>Work</MenuItem>
+                  <MenuItem value='mobile'>Mobile</MenuItem>
+                </Select>
+                <br />
+              </React.Fragment>
+            ))
+          ) : (
             <TextField
               id='outlined-input2'
               name={contact.key}
@@ -82,40 +117,10 @@ const EditContact = (props) => {
               variant='outlined'
               onChange={(event) => changeContactHAndler(event, contact.key)}
             />
-          ) : null}
-          {/* <TextField
-            id='outlined-input2'
-            name={contact.key}
-            label={contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
-            value={contact.value}
-            variant='outlined'
-            onChange={changeContactHAndler}
-          /> */}
+          )}
           <br />
         </React.Fragment>
       ))}
-      {/* <TextField
-        id='outlined-input1'
-        label='Name'
-        name='name'
-        value={name}
-        variant='outlined'
-        onChange={changeContactHAndler}
-      />
-      <br />
-      {phone.map((phn, index) => (
-        <React.Fragment key={index}>
-          <TextField
-            id='outlined-input2'
-            name={phn.type}
-            label={phn.type}
-            value={phone[index].number}
-            variant='outlined'
-            onChange={changeContactHAndler}
-          />
-          <br />
-        </React.Fragment>
-      ))} */}
       <br /> &nbsp;
       <Button variant='contained' color='primary' type='submit'>
         Save

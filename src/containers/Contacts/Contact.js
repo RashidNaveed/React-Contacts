@@ -47,13 +47,29 @@ const Contact = (props) => {
                   <React.Fragment>
                     {contact.phone.map((phn, index) => (
                       <Typography
+                        key={index}
                         component='span'
                         variant='body2'
                         className={classes.inline}
                         color='textPrimary'>
-                        {phn.type}: {phn.number} <br />
+                        {phn.type.charAt(0).toUpperCase() + phn.type.slice(1)}:{' '}
+                        {phn.number} <br />
                       </Typography>
                     ))}
+                    <Typography
+                      component='span'
+                      variant='body2'
+                      className={classes.inline}
+                      color='textPrimary'>
+                      Email: {contact.email} <br />
+                    </Typography>{' '}
+                    <Typography
+                      component='span'
+                      variant='body2'
+                      className={classes.inline}
+                      color='textPrimary'>
+                      Address: {contact.address} <br />
+                    </Typography>
                   </React.Fragment>
                 }
               />
