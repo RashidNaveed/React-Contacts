@@ -26,18 +26,12 @@ const EditContact = (props) => {
     console.log('event', event.target);
     if (inputIdentifier === 'phone') {
       const phoneData = [...contact[inputIdentifier]];
-      if (event.target === <button></button>) {
-        phoneData
-          .slice(0, phoneIdentifier)
-          .concat(phoneData.slice(phoneIdentifier + 1, phoneIdentifier.length));
-      }
       if (type) {
         phoneData[phoneIdentifier].type = event.target.value;
-      }
-      if (event.target === <input></input>) {
+      } else {
         phoneData[phoneIdentifier].number = event.target.value;
       }
-      console.log('phoneData', phoneData);
+
       const updatedContactData = { ...contact };
       updatedContactData[inputIdentifier] = phoneData;
       console.log('updatedContactData', updatedContactData);
@@ -50,6 +44,24 @@ const EditContact = (props) => {
       console.log('updatedcontactdata', updatedContactData);
       setContact(updatedContactData);
     }
+  };
+  const deleteContactNumber = (event, inputIdentifier, index) => {
+    event.preventDefault();
+    const phoneData = [...contact[inputIdentifier]];
+    console.log('delete phoneData', phoneData.length);
+    let deleted = null;
+    if (phoneData.length < 1) {
+      alert('You must have at least one number');
+    } else {
+      deleted = phoneData
+        .slice(0, index)
+        .concat(phoneData.slice(index + 1, phoneData.length));
+      console.log('phoneData', deleted);
+    }
+    const updatedContactData = { ...contact };
+    updatedContactData[inputIdentifier] = deleted;
+    console.log('new data', updatedContactData);
+    setContact(updatedContactData);
   };
   const contactDataArray = [];
   for (let key in contact) {
@@ -78,7 +90,7 @@ const EditContact = (props) => {
               <React.Fragment key={index}>
                 <button
                   onClick={(event) =>
-                    changeContactHAndler(event, contact.key, index)
+                    deleteContactNumber(event, contact.key, index)
                   }>
                   -
                 </button>
