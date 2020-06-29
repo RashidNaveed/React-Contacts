@@ -4,15 +4,18 @@ import * as actionCreator from '../../store/contactStore/index';
 import { withRouter, Link } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Typography,
+  ListItemSecondaryAction,
+  IconButton,
+  Button,
+} from '@material-ui/core';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import { EditOutlined } from '@material-ui/icons';
 
@@ -34,6 +37,11 @@ const Contact = (props) => {
   };
   return (
     <div>
+      <Link to='newcontact' style={{ textDecoration: 'none' }}>
+        <Button variant='outlined' color='primary' style={{ marginTop: 10 }}>
+          Add New Contact
+        </Button>
+      </Link>
       {props.contactData.length > 0 ? (
         props.contactData.map((contact, index) => (
           <List className={classes.root} key={index}>

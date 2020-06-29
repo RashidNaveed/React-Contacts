@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import * as actionCreator from '../../store/contactStore/index';
 import {
   TextField,
   Button,
@@ -8,45 +6,46 @@ import {
   MenuItem,
   Typography,
 } from '@material-ui/core';
-import makeStyles from '../UI/Modal/ModalStyles';
-import Modals from '../UI/Modal/Modal';
+import makeStyles from '../../../components/UI/Modal/ModalStyles';
+import Modals from '../../../components/UI/Modal/Modal';
+import * as actionCreator from '../../../store/contactStore/index';
+import { connect } from 'react-redux';
 
-const EditContact = (props) => {
-  if (props.location.state === undefined) {
-    props.history.replace('/');
-  }
-  const [contact, setContact] = useState(
-    props.contactData[props.location.state.id]
-  );
-
-  const changeContactHAndler = (
+const AddNewContact = (props) => {
+  const [newContactData, setNewConatctData] = useState({
+    name: '',
+    phone: [{ type: 'home', number: '' }],
+    email: '',
+    address: '',
+  });
+  const changeContactHandler = (
     event,
     inputIdentifier,
     phoneIdentifier,
     type
   ) => {
     if (inputIdentifier === 'phone') {
-      const phoneData = [...contact[inputIdentifier]];
+      const phoneData = [...newContactData[inputIdentifier]];
       if (type) {
         phoneData[phoneIdentifier].type = event.target.value;
       } else {
         phoneData[phoneIdentifier].number = event.target.value;
       }
 
-      const updatedContactData = { ...contact };
+      const updatedContactData = { ...newContactData };
       updatedContactData[inputIdentifier] = phoneData;
-      setContact(updatedContactData);
+      setNewConatctData(updatedContactData);
     } else {
       const updatedContactData = {
-        ...contact,
+        ...newContactData,
       };
       updatedContactData[inputIdentifier] = event.target.value;
-      setContact(updatedContactData);
+      setNewConatctData(updatedContactData);
     }
   };
   const deleteContactNumber = (event, inputIdentifier, index) => {
     event.preventDefault();
-    const phoneData = [...contact[inputIdentifier]];
+    const phoneData = [...newContactData[inputIdentifier]];
     let deleted = null;
     if (phoneData.length <= 1) {
       alert('You must have at least one number');
@@ -54,31 +53,31 @@ const EditContact = (props) => {
       deleted = phoneData
         .slice(0, index)
         .concat(phoneData.slice(index + 1, phoneData.length));
-      const updatedContactData = { ...contact };
+      const updatedContactData = { ...newContactData };
       updatedContactData[inputIdentifier] = deleted;
-      setContact(updatedContactData);
+      setNewConatctData(updatedContactData);
     }
   };
   const addContactNumber = (event, inputIdentifier) => {
     event.preventDefault();
     const newArray = [
-      ...contact[inputIdentifier],
+      ...newContactData[inputIdentifier],
       { type: 'mobile', number: '' },
     ];
-    const updatedContactData = { ...contact };
+    const updatedContactData = { ...newContactData };
     updatedContactData[inputIdentifier] = newArray;
-    setContact(updatedContactData);
+    setNewConatctData(updatedContactData);
   };
   const contactDataArray = [];
-  for (let key in contact) {
+  for (let key in newContactData) {
     contactDataArray.push({
       key: key,
-      value: contact[key],
+      value: newContactData[key],
     });
   }
   const submitContactData = (event) => {
     event.preventDefault();
-    props.onEditContact(props.location.state.id, contact);
+    props.onAddContact(newContactData);
     props.history.replace('/');
   };
 
@@ -114,13 +113,13 @@ const EditContact = (props) => {
                     value={number.number}
                     variant='outlined'
                     onChange={(event) =>
-                      changeContactHAndler(event, contact.key, index)
+                      changeContactHandler(event, contact.key, index)
                     }
                   />
                   <Select
                     value={number.type}
                     onChange={(event) =>
-                      changeContactHAndler(
+                      changeContactHandler(
                         event,
                         contact.key,
                         index,
@@ -151,7 +150,7 @@ const EditContact = (props) => {
               label={contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
               value={contact.value}
               variant='outlined'
-              onChange={(event) => changeContactHAndler(event, contact.key)}
+              onChange={(event) => changeContactHandler(event, contact.key)}
             />
           )}
           <br />
@@ -170,19 +169,11 @@ const EditContact = (props) => {
   return <Modals title={title} additionalData={additionalData} />;
 };
 
-const mapStateToProps = (state) => {
-  return {
-    contactData: state.contacts,
-  };
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
-    onEditContact: (contactId, contactData) =>
-      dispatch(actionCreator.editConatct(contactId, contactData)),
+    onAddContact: (newContactData) =>
+      dispatch(actionCreator.newContact(newContactData)),
   };
 };
 
-export default React.memo(
-  connect(mapStateToProps, mapDispatchToProps)(EditContact)
-);
+export default connect(null, mapDispatchToProps)(AddNewContact);

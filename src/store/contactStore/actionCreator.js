@@ -18,3 +18,12 @@ export const deleteContact = (contactId) => {
     },
   };
 };
+
+export const newContact = (contactData) => {
+  return {
+    type: actionType.NEW_CONTACT,
+    payload: {
+      newContactData: contactData,
+    },
+  };
+};

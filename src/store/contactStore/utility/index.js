@@ -1,1 +1,1 @@
-export { editConatct, deleteContact } from "./reducerFunctions";
+export { editConatct, deleteContact, newContact } from './reducerFunctions';

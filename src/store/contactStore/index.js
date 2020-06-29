@@ -1,1 +1,1 @@
-export { editConatct, deleteContact } from "./actionCreator";
+export { editConatct, deleteContact, newContact } from './actionCreator';

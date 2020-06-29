@@ -20,3 +20,11 @@ export const deleteContact = (state, action) => {
     contacts: updatedArray,
   };
 };
+
+export const newContact = (state, action) => {
+  const updatedArray = [...state.contacts, action.payload.newContactData];
+  return {
+    ...state,
+    contacts: updatedArray,
+  };
+};
