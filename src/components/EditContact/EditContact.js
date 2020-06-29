@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreator from '../../store/contactStore/index';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
+import {
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  Typography,
+} from '@material-ui/core';
 import makeStyles from '../UI/Modal/ModalStyles';
 import Modals from '../UI/Modal/Modal';
 
 const EditContact = (props) => {
-  if (!props.location.state) {
+  if (props.location.state === undefined) {
     props.history.replace('/');
   }
   const [contact, setContact] = useState(
     props.contactData[props.location.state.id]
   );
+
   const changeContactHAndler = (
     event,
     inputIdentifier,
     phoneIdentifier,
     type
   ) => {
-    console.log('event', event.target);
     if (inputIdentifier === 'phone') {
       const phoneData = [...contact[inputIdentifier]];
       if (type) {
@@ -34,33 +35,38 @@ const EditContact = (props) => {
 
       const updatedContactData = { ...contact };
       updatedContactData[inputIdentifier] = phoneData;
-      console.log('updatedContactData', updatedContactData);
       setContact(updatedContactData);
     } else {
       const updatedContactData = {
         ...contact,
       };
       updatedContactData[inputIdentifier] = event.target.value;
-      console.log('updatedcontactdata', updatedContactData);
       setContact(updatedContactData);
     }
   };
   const deleteContactNumber = (event, inputIdentifier, index) => {
     event.preventDefault();
     const phoneData = [...contact[inputIdentifier]];
-    console.log('delete phoneData', phoneData.length);
     let deleted = null;
-    if (phoneData.length < 1) {
+    if (phoneData.length <= 1) {
       alert('You must have at least one number');
     } else {
       deleted = phoneData
         .slice(0, index)
         .concat(phoneData.slice(index + 1, phoneData.length));
-      console.log('phoneData', deleted);
+      const updatedContactData = { ...contact };
+      updatedContactData[inputIdentifier] = deleted;
+      setContact(updatedContactData);
     }
+  };
+  const addContactNumber = (event, inputIdentifier) => {
+    event.preventDefault();
+    const newArray = [
+      ...contact[inputIdentifier],
+      { type: 'mobile', number: '' },
+    ];
     const updatedContactData = { ...contact };
-    updatedContactData[inputIdentifier] = deleted;
-    console.log('new data', updatedContactData);
+    updatedContactData[inputIdentifier] = newArray;
     setContact(updatedContactData);
   };
   const contactDataArray = [];
@@ -86,40 +92,58 @@ const EditContact = (props) => {
       {contactDataArray.map((contact) => (
         <React.Fragment key={contact.key}>
           {contact.key === 'phone' ? (
-            contact.value.map((number, index) => (
-              <React.Fragment key={index}>
-                <button
-                  onClick={(event) =>
-                    deleteContactNumber(event, contact.key, index)
-                  }>
-                  -
-                </button>
-                <TextField
-                  id='outlined-input2'
-                  name={number.type}
-                  label={
-                    number.type.charAt(0).toUpperCase() + number.type.slice(1)
-                  }
-                  value={number.number}
+            <React.Fragment>
+              <Typography variant='h6' color='initial' justify='space-between'>
+                {contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
+                <Button
                   variant='outlined'
-                  onChange={(event) =>
-                    changeContactHAndler(event, contact.key, index)
-                  }
-                />
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={number.type}
-                  onChange={(event) =>
-                    changeContactHAndler(event, contact.key, index, number.type)
-                  }>
-                  <MenuItem value='home'>Home</MenuItem>
-                  <MenuItem value='work'>Work</MenuItem>
-                  <MenuItem value='mobile'>Mobile</MenuItem>
-                </Select>
-                <br />
-              </React.Fragment>
-            ))
+                  color='primary'
+                  style={{ border: 0 }}
+                  onClick={(event) => addContactNumber(event, contact.key)}>
+                  +
+                </Button>
+              </Typography>
+              {contact.value.map((number, index) => (
+                <React.Fragment key={index}>
+                  <TextField
+                    id='outlined-input2'
+                    name={number.type}
+                    label={
+                      number.type.charAt(0).toUpperCase() + number.type.slice(1)
+                    }
+                    value={number.number}
+                    variant='outlined'
+                    onChange={(event) =>
+                      changeContactHAndler(event, contact.key, index)
+                    }
+                  />
+                  <Select
+                    value={number.type}
+                    onChange={(event) =>
+                      changeContactHAndler(
+                        event,
+                        contact.key,
+                        index,
+                        number.type
+                      )
+                    }>
+                    <MenuItem value='home'>Home</MenuItem>
+                    <MenuItem value='work'>Work</MenuItem>
+                    <MenuItem value='mobile'>Mobile</MenuItem>
+                  </Select>
+                  <Button
+                    style={{ border: 0 }}
+                    variant='outlined'
+                    color='secondary'
+                    onClick={(event) =>
+                      deleteContactNumber(event, contact.key, index)
+                    }>
+                    -
+                  </Button>
+                  <br />
+                </React.Fragment>
+              ))}
+            </React.Fragment>
           ) : (
             <TextField
               id='outlined-input2'
