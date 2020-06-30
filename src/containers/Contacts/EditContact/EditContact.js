@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import * as actionCreator from '../../../store/contactStore/index';
 import {
@@ -15,6 +16,8 @@ const EditContact = (props) => {
   if (props.location.state === undefined) {
     props.history.replace('/');
   }
+  const { register, handleSubmit } = useForm();
+  const classes = makeStyles();
   const [contact, setContact] = useState(
     props.contactData[props.location.state.id]
   );
@@ -75,8 +78,7 @@ const EditContact = (props) => {
       value: contact[key],
     });
   }
-  const submitContactData = (event) => {
-    event.preventDefault();
+  const submitContactData = () => {
     props.onEditContact(props.location.state.id, contact);
     props.history.replace('/');
   };
@@ -84,8 +86,8 @@ const EditContact = (props) => {
   let title = 'Edit Contact';
   let additionalData = (
     <form
-      onSubmit={submitContactData}
-      className={makeStyles().editContactRoot}
+      onSubmit={handleSubmit(submitContactData)}
+      className={classes.editContactRoot}
       noValidate
       autoComplete='off'>
       {contactDataArray.map((contact) => (
@@ -97,7 +99,7 @@ const EditContact = (props) => {
                 <Button
                   variant='outlined'
                   color='primary'
-                  style={{ border: 0 }}
+                  style={{ border: 'none' }}
                   onClick={(event) => addContactNumber(event, contact.key)}>
                   +
                 </Button>
@@ -112,6 +114,7 @@ const EditContact = (props) => {
                     }
                     value={number.number}
                     variant='outlined'
+                    inputRef={register({ required: true })}
                     onChange={(event) =>
                       changeContactHandler(event, contact.key, index)
                     }
@@ -150,6 +153,7 @@ const EditContact = (props) => {
               label={contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
               value={contact.value}
               variant='outlined'
+              inputRef={register({ required: true })}
               onChange={(event) => changeContactHandler(event, contact.key)}
             />
           )}

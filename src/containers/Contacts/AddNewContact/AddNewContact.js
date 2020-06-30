@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   TextField,
   Button,
@@ -10,8 +11,11 @@ import makeStyles from '../../../components/UI/Modal/ModalStyles';
 import Modals from '../../../components/UI/Modal/Modal';
 import * as actionCreator from '../../../store/contactStore/index';
 import { connect } from 'react-redux';
+import { phoneNumberValidation } from '../../../projectData/validationRules';
 
 const AddNewContact = (props) => {
+  const { register, handleSubmit } = useForm();
+  const classes = makeStyles();
   const [newContactData, setNewConatctData] = useState({
     name: '',
     phone: [{ type: 'home', number: '' }],
@@ -75,8 +79,8 @@ const AddNewContact = (props) => {
       value: newContactData[key],
     });
   }
-  const submitContactData = (event) => {
-    event.preventDefault();
+  console.log('array', contactDataArray);
+  const submitContactData = () => {
     props.onAddContact(newContactData);
     props.history.replace('/');
   };
@@ -84,8 +88,8 @@ const AddNewContact = (props) => {
   let title = 'Edit Contact';
   let additionalData = (
     <form
-      onSubmit={submitContactData}
-      className={makeStyles().editContactRoot}
+      onSubmit={handleSubmit(submitContactData)}
+      className={classes.editContactRoot}
       noValidate
       autoComplete='off'>
       {contactDataArray.map((contact) => (
@@ -97,7 +101,7 @@ const AddNewContact = (props) => {
                 <Button
                   variant='outlined'
                   color='primary'
-                  style={{ border: 0 }}
+                  style={{ border: 'none' }}
                   onClick={(event) => addContactNumber(event, contact.key)}>
                   +
                 </Button>
@@ -112,6 +116,7 @@ const AddNewContact = (props) => {
                     }
                     value={number.number}
                     variant='outlined'
+                    inputRef={register(phoneNumberValidation)}
                     onChange={(event) =>
                       changeContactHandler(event, contact.key, index)
                     }
@@ -131,7 +136,7 @@ const AddNewContact = (props) => {
                     <MenuItem value='mobile'>Mobile</MenuItem>
                   </Select>
                   <Button
-                    style={{ border: 0 }}
+                    style={{ border: 'none' }}
                     variant='outlined'
                     color='secondary'
                     onClick={(event) =>
@@ -150,6 +155,7 @@ const AddNewContact = (props) => {
               label={contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
               value={contact.value}
               variant='outlined'
+              inputRef={register({ required: true })}
               onChange={(event) => changeContactHandler(event, contact.key)}
             />
           )}
