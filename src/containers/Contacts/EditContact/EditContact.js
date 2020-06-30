@@ -2,21 +2,17 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import * as actionCreator from '../../../store/contactStore/index';
-import {
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import makeStyles from '../../../components/UI/Modal/ModalStyles';
 import Modals from '../../../components/UI/Modal/Modal';
+import EditContactNumber from '../../../components/EditContact/EditContactNumber';
+import EditContactData from '../../../components/EditContact/EditContactData';
 
 const EditContact = (props) => {
   if (props.location.state === undefined) {
     props.history.replace('/');
   }
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, errors } = useForm();
   const classes = makeStyles();
   const [contact, setContact] = useState(
     props.contactData[props.location.state.id]
@@ -93,68 +89,20 @@ const EditContact = (props) => {
       {contactDataArray.map((contact) => (
         <React.Fragment key={contact.key}>
           {contact.key === 'phone' ? (
-            <React.Fragment>
-              <Typography variant='h6' color='initial' justify='space-between'>
-                {contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
-                <Button
-                  variant='outlined'
-                  color='primary'
-                  style={{ border: 'none' }}
-                  onClick={(event) => addContactNumber(event, contact.key)}>
-                  +
-                </Button>
-              </Typography>
-              {contact.value.map((number, index) => (
-                <React.Fragment key={index}>
-                  <TextField
-                    id='outlined-input2'
-                    name={number.type}
-                    label={
-                      number.type.charAt(0).toUpperCase() + number.type.slice(1)
-                    }
-                    value={number.number}
-                    variant='outlined'
-                    inputRef={register({ required: true })}
-                    onChange={(event) =>
-                      changeContactHandler(event, contact.key, index)
-                    }
-                  />
-                  <Select
-                    value={number.type}
-                    onChange={(event) =>
-                      changeContactHandler(
-                        event,
-                        contact.key,
-                        index,
-                        number.type
-                      )
-                    }>
-                    <MenuItem value='home'>Home</MenuItem>
-                    <MenuItem value='work'>Work</MenuItem>
-                    <MenuItem value='mobile'>Mobile</MenuItem>
-                  </Select>
-                  <Button
-                    style={{ border: 0 }}
-                    variant='outlined'
-                    color='secondary'
-                    onClick={(event) =>
-                      deleteContactNumber(event, contact.key, index)
-                    }>
-                    -
-                  </Button>
-                  <br />
-                </React.Fragment>
-              ))}
-            </React.Fragment>
+            <EditContactNumber
+              contact={contact}
+              addContactNumber={addContactNumber}
+              changeContactHandler={changeContactHandler}
+              deleteContactNumber={deleteContactNumber}
+              register={register}
+              errors={errors}
+            />
           ) : (
-            <TextField
-              id='outlined-input2'
-              name={contact.key}
-              label={contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
-              value={contact.value}
-              variant='outlined'
-              inputRef={register({ required: true })}
-              onChange={(event) => changeContactHandler(event, contact.key)}
+            <EditContactData
+              contact={contact}
+              changeContactHandler={changeContactHandler}
+              register={register}
+              errors={errors}
             />
           )}
           <br />

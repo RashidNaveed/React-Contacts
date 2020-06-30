@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import makeStyles from '../../../components/UI/Modal/ModalStyles';
 import Modals from '../../../components/UI/Modal/Modal';
 import * as actionCreator from '../../../store/contactStore/index';
 import { connect } from 'react-redux';
-import { phoneNumberValidation } from '../../../projectData/validationRules';
+import AddContactNumbers from '../../../components/AddContact/AddContactNumbers';
+import AddContactData from '../../../components/AddContact/AddContactData';
 
 const AddNewContact = (props) => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, errors } = useForm();
   const classes = makeStyles();
   const [newContactData, setNewConatctData] = useState({
     name: '',
@@ -35,7 +30,6 @@ const AddNewContact = (props) => {
       } else {
         phoneData[phoneIdentifier].number = event.target.value;
       }
-
       const updatedContactData = { ...newContactData };
       updatedContactData[inputIdentifier] = phoneData;
       setNewConatctData(updatedContactData);
@@ -79,84 +73,33 @@ const AddNewContact = (props) => {
       value: newContactData[key],
     });
   }
-  console.log('array', contactDataArray);
   const submitContactData = () => {
     props.onAddContact(newContactData);
     props.history.replace('/');
   };
 
-  let title = 'Edit Contact';
+  let title = 'Add New Contact';
   let additionalData = (
     <form
       onSubmit={handleSubmit(submitContactData)}
-      className={classes.editContactRoot}
-      noValidate
-      autoComplete='off'>
+      className={classes.editContactRoot}>
       {contactDataArray.map((contact) => (
         <React.Fragment key={contact.key}>
           {contact.key === 'phone' ? (
-            <React.Fragment>
-              <Typography variant='h6' color='initial' justify='space-between'>
-                {contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
-                <Button
-                  variant='outlined'
-                  color='primary'
-                  style={{ border: 'none' }}
-                  onClick={(event) => addContactNumber(event, contact.key)}>
-                  +
-                </Button>
-              </Typography>
-              {contact.value.map((number, index) => (
-                <React.Fragment key={index}>
-                  <TextField
-                    id='outlined-input2'
-                    name={number.type}
-                    label={
-                      number.type.charAt(0).toUpperCase() + number.type.slice(1)
-                    }
-                    value={number.number}
-                    variant='outlined'
-                    inputRef={register(phoneNumberValidation)}
-                    onChange={(event) =>
-                      changeContactHandler(event, contact.key, index)
-                    }
-                  />
-                  <Select
-                    value={number.type}
-                    onChange={(event) =>
-                      changeContactHandler(
-                        event,
-                        contact.key,
-                        index,
-                        number.type
-                      )
-                    }>
-                    <MenuItem value='home'>Home</MenuItem>
-                    <MenuItem value='work'>Work</MenuItem>
-                    <MenuItem value='mobile'>Mobile</MenuItem>
-                  </Select>
-                  <Button
-                    style={{ border: 'none' }}
-                    variant='outlined'
-                    color='secondary'
-                    onClick={(event) =>
-                      deleteContactNumber(event, contact.key, index)
-                    }>
-                    -
-                  </Button>
-                  <br />
-                </React.Fragment>
-              ))}
-            </React.Fragment>
+            <AddContactNumbers
+              contact={contact}
+              addContactNumber={addContactNumber}
+              changeContactHandler={changeContactHandler}
+              deleteContactNumber={deleteContactNumber}
+              register={register}
+              errors={errors}
+            />
           ) : (
-            <TextField
-              id='outlined-input2'
-              name={contact.key}
-              label={contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}
-              value={contact.value}
-              variant='outlined'
-              inputRef={register({ required: true })}
-              onChange={(event) => changeContactHandler(event, contact.key)}
+            <AddContactData
+              contact={contact}
+              changeContactHandler={changeContactHandler}
+              register={register}
+              errors={errors}
             />
           )}
           <br />
@@ -174,12 +117,10 @@ const AddNewContact = (props) => {
   );
   return <Modals title={title} additionalData={additionalData} />;
 };
-
 const mapDispatchToProps = (dispatch) => {
   return {
     onAddContact: (newContactData) =>
       dispatch(actionCreator.newContact(newContactData)),
   };
 };
-
 export default connect(null, mapDispatchToProps)(AddNewContact);
