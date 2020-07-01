@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@material-ui/core';
 import makeStyles from '../../../components/UI/Modal/ModalStyles';
-import Modals from '../../../components/UI/Modal/Modal';
 import * as actionCreator from '../../../store/contactStore/index';
 import { connect } from 'react-redux';
 import AddContactNumbers from '../../../components/AddContact/AddContactNumbers';
 import AddContactData from '../../../components/AddContact/AddContactData';
+import Form from '../../../components/UI/Form/Form';
 
 const AddNewContact = (props) => {
   const { register, handleSubmit, errors } = useForm();
@@ -115,7 +115,7 @@ const AddNewContact = (props) => {
       </Button>
     </form>
   );
-  return <Modals title={title} additionalData={additionalData} />;
+  return <Form title={title} additionalData={additionalData} />;
 };
 const mapDispatchToProps = (dispatch) => {
   return {

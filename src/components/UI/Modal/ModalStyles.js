@@ -22,4 +22,12 @@ export default makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
+  contactList: {
+    width: '100%',
+    maxWidth: '36ch',
+    backgroundColor: theme.palette.background.paper,
+  },
+  inline: {
+    display: 'inline',
+  },
 }));

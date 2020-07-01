@@ -22,7 +22,7 @@ const AddContactData = (props) => {
                 } is required`,
               },
               minLength: {
-                value: 3,
+                value: 5,
                 message: `${
                   contact.key.charAt(0).toUpperCase() + contact.key.slice(1)
                 } should be of length 3`,

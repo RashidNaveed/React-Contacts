@@ -1,11 +1,16 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import Modals from '../UI/Modal/Modal';
+import { connect } from 'react-redux';
+import * as actionCreator from '../../store/contactStore/index';
+import Form from '../UI/Form/Form';
 
 const DeleteContact = (props) => {
   if (!props.location.state) {
     props.history.replace('/');
   }
+  const deleteContact = (id) => {
+    props.onDeleteContact(id);
+  };
   let title = 'Are you sure to delete contact?';
   let description = <span>Name: {props.location.state.data.name}</span>;
   let additionalData = (
@@ -14,7 +19,7 @@ const DeleteContact = (props) => {
         variant='contained'
         color='secondary'
         onClick={() => {
-          props.location.state.deleteContact(props.location.state.id);
+          deleteContact(props.location.state.id);
           props.history.push('/');
         }}>
         Yes
@@ -27,7 +32,7 @@ const DeleteContact = (props) => {
   );
 
   return (
-    <Modals
+    <Form
       title={title}
       description={description}
       additionalData={additionalData}
@@ -35,4 +40,11 @@ const DeleteContact = (props) => {
   );
 };
 
-export default React.memo(DeleteContact);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onDeleteContact: (contactId) =>
+      dispatch(actionCreator.deleteContact(contactId)),
+  };
+};
+
+export default React.memo(connect(null, mapDispatchToProps)(DeleteContact));

@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import * as actionCreator from '../../../store/contactStore/index';
-import { TextField, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import makeStyles from '../../../components/UI/Modal/ModalStyles';
-import Modals from '../../../components/UI/Modal/Modal';
 import EditContactNumber from '../../../components/EditContact/EditContactNumber';
 import EditContactData from '../../../components/EditContact/EditContactData';
+import _ from 'lodash';
+import Form from '../../../components/UI/Form/Form';
 
 const EditContact = (props) => {
   if (props.location.state === undefined) {
@@ -17,12 +18,15 @@ const EditContact = (props) => {
   const [contact, setContact] = useState(
     props.contactData[props.location.state.id]
   );
+  const cloneObject = _.cloneDeep(contact);
   const changeContactHandler = (
     event,
     inputIdentifier,
     phoneIdentifier,
     type
   ) => {
+    cloneObject[inputIdentifier] = event.target.value;
+    console.log('cloneObject', cloneObject);
     if (inputIdentifier === 'phone') {
       const phoneData = [...contact[inputIdentifier]];
       if (type) {
@@ -30,7 +34,6 @@ const EditContact = (props) => {
       } else {
         phoneData[phoneIdentifier].number = event.target.value;
       }
-
       const updatedContactData = { ...contact };
       updatedContactData[inputIdentifier] = phoneData;
       setContact(updatedContactData);
@@ -118,7 +121,7 @@ const EditContact = (props) => {
       </Button>
     </form>
   );
-  return <Modals title={title} additionalData={additionalData} />;
+  return <Form title={title} additionalData={additionalData} />;
 };
 
 const mapStateToProps = (state) => {
