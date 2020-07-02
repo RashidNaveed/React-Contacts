@@ -7,8 +7,8 @@ import { List, Divider, Grid } from '@material-ui/core';
 import NewContactButton from '../../components/Contact/NewContactButton';
 import ContactList from '../../components/Contact/ContactList';
 import DeleteContact from '../../components/DeleteContact/DeleteContact';
-import EditContact from './EditContact/EditContact';
-import AddNewContact from './AddNewContact/AddNewContact';
+import EditContactReducer from './EditContact/EditContactReducer';
+import AddNewContactReducer from './AddNewContact/AddNewContactReducer';
 
 const Contact = (props) => {
   const classes = makeStyles();
@@ -31,8 +31,8 @@ const Contact = (props) => {
       <Grid item xs={5}>
         <Switch>
           <Route exact path='/deletecontact' component={DeleteContact} />
-          <Route exact path='/editcontact' component={EditContact} />
-          <Route exact path='/newcontact' component={AddNewContact} />
+          <Route exact path='/editcontact' component={EditContactReducer} />
+          <Route exact path='/newcontact' component={AddNewContactReducer} />
         </Switch>
       </Grid>
       <Grid item xs={3} />

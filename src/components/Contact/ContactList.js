@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import makeStyles from '../UI/Modal/ModalStyles';
 
 const ContactList = (props) => {
+  const classes = makeStyles();
   const { contact, index } = props;
   return (
     <ListItem alignItems='flex-start'>
@@ -28,7 +29,7 @@ const ContactList = (props) => {
                 key={index}
                 component='span'
                 variant='body2'
-                className={makeStyles().inline}
+                className={classes.inline}
                 color='textPrimary'>
                 {phn.type.charAt(0).toUpperCase() + phn.type.slice(1)}:{' '}
                 {phn.number} <br />
@@ -37,14 +38,14 @@ const ContactList = (props) => {
             <Typography
               component='span'
               variant='body2'
-              className={makeStyles().inline}
+              className={classes.inline}
               color='textPrimary'>
               Email: {contact.email} <br />
             </Typography>{' '}
             <Typography
               component='span'
               variant='body2'
-              className={makeStyles().inline}
+              className={classes.inline}
               color='textPrimary'>
               Address: {contact.address} <br />
             </Typography>

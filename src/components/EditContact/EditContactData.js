@@ -3,7 +3,7 @@ import { emailValidation } from '../../projectData/validationRules';
 import { TextField } from '@material-ui/core';
 
 const EditContactData = (props) => {
-  const { contact, changeContactHandler, register, errors } = props;
+  const { contact, changeContactData, register, errors } = props;
   return (
     <TextField
       id='outlined-input2'
@@ -31,7 +31,7 @@ const EditContactData = (props) => {
       }
       error={errors[contact.key] ? true : false}
       helperText={errors[contact.key] ? errors[contact.key].message : null}
-      onChange={(event) => changeContactHandler(event, contact.key)}
+      onChange={(event) => changeContactData(event, contact.key)}
     />
   );
 };

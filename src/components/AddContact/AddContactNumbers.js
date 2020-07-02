@@ -12,7 +12,7 @@ const AddContactNumbers = (props) => {
   const {
     contact,
     addContactNumber,
-    changeContactHandler,
+    changeContactNumber,
     deleteContactNumber,
     register,
     errors,
@@ -42,14 +42,12 @@ const AddContactNumbers = (props) => {
             helperText={
               errors[number.type] ? errors[number.type].message : null
             }
-            onChange={(event) =>
-              changeContactHandler(event, contact.key, index)
-            }
+            onChange={(event) => changeContactNumber(event, contact.key, index)}
           />
           <Select
             value={number.type}
             onChange={(event) =>
-              changeContactHandler(event, contact.key, index, number.type)
+              changeContactNumber(event, contact.key, index, number.type)
             }>
             <MenuItem value='home'>Home</MenuItem>
             <MenuItem value='work'>Work</MenuItem>
