@@ -27,3 +27,19 @@ export const newContact = (contactData) => {
     },
   };
 };
+
+export const deleteSelectedContact = (contactId) => {
+  return (dispatch) => {
+    setTimeout(() => {
+      dispatch(deleteContact(contactId));
+    }, 2000);
+  };
+};
+
+export const addNewContact = (contactId) => {
+  return (dispatch) => {
+    setTimeout(() => {
+      dispatch(newContact(contactId));
+    }, 2000);
+  };
+};

@@ -1,1 +1,5 @@
-export { editConatct, deleteContact, newContact } from './actionCreator';
+export {
+  editConatct,
+  deleteSelectedContact,
+  addNewContact,
+} from './actionCreator';

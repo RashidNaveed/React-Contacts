@@ -43,7 +43,7 @@ const DeleteContact = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onDeleteContact: (contactId) =>
-      dispatch(actionCreator.deleteContact(contactId)),
+      dispatch(actionCreator.deleteSelectedContact(contactId)),
   };
 };
 

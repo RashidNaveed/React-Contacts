@@ -109,7 +109,7 @@ const AddNewContactReducer = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onAddContact: (newContactData) =>
-      dispatch(actionCreator.newContact(newContactData)),
+      dispatch(actionCreator.addNewContact(newContactData)),
   };
 };
 export default connect(null, mapDispatchToProps)(AddNewContactReducer);
